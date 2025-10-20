@@ -13,7 +13,10 @@ public class HandController : MonoBehaviour
     public float interactDistance = 3f;  // 可交互距离
     public LayerMask interactableLayer;  // 交互物体层
 
+    private Interactable currentTarget;
+
     private float xRotation = 0f;
+    public GameObject interactText;
 
     void Start()
     {
@@ -26,7 +29,11 @@ public class HandController : MonoBehaviour
     {
         HandleMovement();
         HandleLook();
-        HandleInteraction();
+       // HandleInteraction();
+        if (Input.GetKeyDown(KeyCode.E) && currentTarget != null)
+        {
+            currentTarget.Interact();
+        }
     }
 
     void HandleMovement()
@@ -51,26 +58,54 @@ public class HandController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    void HandleInteraction()
+    void OnTriggerEnter(Collider other)
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        var interactable = other.GetComponent<Interactable>();
+        if (interactable != null)
         {
-            Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, interactDistance, interactableLayer))
-            {
-                // 检查被射中的物体是否有 IInteractable 接口
-                Interactable interactable = hit.collider.GetComponent<Interactable>();
-                if (interactable != null)
-                {
-                    interactable.Interact();
-                }
-                else
-                {
-                    Debug.Log("Hit interactable object: " + hit.collider.name);
-                }
-            }
+            currentTarget = interactable;
+            Debug.Log("Player entered interaction zone: " + other.name);
         }
     }
+
+    void OnTriggerExit(Collider other)
+    {
+        var interactable = other.GetComponent<Interactable>();
+        if (interactable == currentTarget)
+        {
+            currentTarget = null;
+            Debug.Log("Player left interaction zone");
+        }
+    }
+
+
+
+    /* void HandleInteraction()
+     {
+         if (Input.GetKeyDown(KeyCode.E))
+         {
+
+             Ray ray = new Ray(playerCamera.position, playerCamera.forward);
+             RaycastHit hit;
+
+             Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red, 1f);
+
+             if (Physics.Raycast(ray, out hit, interactDistance , interactableLayer))
+             {
+                 // 检查被射中的物体是否有 Interactable 接口
+                 Interactable interactable = hit.collider.GetComponent<Interactable>();
+                 if (interactable != null)
+                 {
+                     interactText.SetActive(true);
+                     interactable.Interact();
+                     Debug.Log("Interact");
+                 }
+                 else
+                 {
+                     interactText.SetActive(false);
+                     Debug.Log("Hit interactable object: " + hit.collider.name);
+                 }
+             }
+         }
+     }*/
 }
