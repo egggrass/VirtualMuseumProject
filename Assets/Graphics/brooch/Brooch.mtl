@@ -1,0 +1,22 @@
+# Blender 4.5.3 LTS MTL File: 'SceneSetup2.blend1'
+# www.blender.org
+
+newmtl Project_3_-_Object_1.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/ottar/OneDrive/Töölaud/a/Material Heritage/Meshes/Project 3 - Object - 1/Project 3 - Object 1.png
+
+newmtl Project_3_-_Object_11.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd C:/Users/ottar/OneDrive/Töölaud/a/Material Heritage/Meshes/Project 3 - Object - 1/Project 3 - Object 11.png
