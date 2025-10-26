@@ -12,22 +12,32 @@ public class HandController : MonoBehaviour
     [Header("Interaction Settings")]
     public float interactDistance = 3f;  // 可交互距离
     public LayerMask interactableLayer;  // 交互物体层
+    public LayerMask groundMask;
 
     private Interactable currentTarget;
 
     private float xRotation = 0f;
+    private Rigidbody rb;
+    private CharacterController controller;
     public GameObject interactText;
+
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    Vector3 velocity;
+    public float gravity = -20f;
 
     void Start()
     {
         // 锁定鼠标在屏幕中央
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        HandleMovement();
+        
         HandleLook();
        // HandleInteraction();
         if (Input.GetKeyDown(KeyCode.E) && currentTarget != null)
@@ -36,14 +46,28 @@ public class HandController : MonoBehaviour
         }
     }
 
+     void FixedUpdate()
+    {
+        HandleMovement();
+    }
+
     void HandleMovement()
     {
+   
         float x = Input.GetAxis("Horizontal"); // A/D
         float z = Input.GetAxis("Vertical");   // W/S
 
         // 相对玩家方向移动
         Vector3 move = transform.right * x + transform.forward * z;
-        transform.position += move * moveSpeed * Time.deltaTime;
+        //transform.position += move * moveSpeed * Time.deltaTime;
+        controller.Move(move * moveSpeed * Time.deltaTime);
+
+        if (controller.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f; // 确保角色贴地
+        }
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 
     void HandleLook()
@@ -80,32 +104,4 @@ public class HandController : MonoBehaviour
 
 
 
-    /* void HandleInteraction()
-     {
-         if (Input.GetKeyDown(KeyCode.E))
-         {
-
-             Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-             RaycastHit hit;
-
-             Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.red, 1f);
-
-             if (Physics.Raycast(ray, out hit, interactDistance , interactableLayer))
-             {
-                 // 检查被射中的物体是否有 Interactable 接口
-                 Interactable interactable = hit.collider.GetComponent<Interactable>();
-                 if (interactable != null)
-                 {
-                     interactText.SetActive(true);
-                     interactable.Interact();
-                     Debug.Log("Interact");
-                 }
-                 else
-                 {
-                     interactText.SetActive(false);
-                     Debug.Log("Hit interactable object: " + hit.collider.name);
-                 }
-             }
-         }
-     }*/
 }
